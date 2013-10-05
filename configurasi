@@ -1,0 +1,13 @@
+##############################################
+# Install dan Configurasi Squid-2.7 STABLE9 ##
+##############################################
+apt-get update &&
+apt-get -y update &&
+apt-get -y install gcc &&
+apt-get -y install build-essential &&
+apt-get -y install sharutils &&
+apt-get -y install ccze &&
+apt-get -y install libzip-dev &&
+apt-get -y install automake1.9
+
+

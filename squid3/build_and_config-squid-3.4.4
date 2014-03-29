@@ -1,0 +1,116 @@
+apt-get -y update && apt-get -y upgrade
+apt-get install -y devscripts build-essential openssl libssl-dev fakeroot libcppunit-dev libsasl2-dev cdbs ccze acpid libtool
+
+wget http://www.squid-cache.org/Versions/v3/3.4/squid-3.4.4.tar.gz
+
+tar zxvf squid-3.4.4.tar.gz && cd squid-3.4.4
+
+nano bootstrap.sh
+ubah line 166 'ed' menjadi 'sed'
+
+touch SPONSORS.list
+./bootstrap.sh
+Bila sukses maka pesannya sebagai berikut :
+automake (1.11.1) : automake
+autoconf (2.63) : autoconf
+libtool (2.2.6b) : libtool
+libtool path : /usr/bin
+Bootstrapping
+Fixing configure recursion
+Autotool bootstrapping complete.
+
+cat /proc/cpuinfo
+http://en.gentoo-wiki.com/wiki/Safe_Cflags/AMD 
+http://en.gentoo-wiki.com/wiki/Safe_Cflags/Intel
+http://www.gentoo-wiki.info/Safe_Cflags
+
+CHOST="x86_64-pc-Linux-gnu" CFLAGS="-march=nocona -O2 -pipe" CXXFLAGS="${CFLAGS}" \
+./configure --prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin \
+--libexecdir=/usr/lib/squid --sysconfdir=/etc/squid --localstatedir=/var \
+--libdir=/usr/lib --includedir=/usr/include --datadir=/usr/share/squid \
+--infodir=/usr/share/info --mandir=/usr/share/man --disable-dependency-tracking \
+--enable-storeio=ufs,aufs,diskd --enable-removal-policies=lru,heap --enable-icmp \
+--enable-esi --enable-icap-client --disable-wccp --disable-wccpv2 \
+--enable-kill-parent-hack --enable-cachemgr-hostname=TProxy --enable-ssl \
+--enable-cache-digests --enable-Linux-netfilter --enable-follow-x-forwarded-for \
+--enable-x-accelerator-vary --enable-zph-qos --with-default-user=proxy \
+--with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid --with-large-files \
+--enable-ltdl-convenience --with-filedescriptors=65536 --enable-ssl-crtd \
+--disable-auth --build=i486-Linux-gnu build_alias=i486-Linux-gnu --enable-icap-client
+
+make && make install
+
+useradd squid -d /var/spool/squid
+mkdir /var/spool/squid && chmod 777 /var/spool/squid && chown -Rf squid:squid /var/spool/squid
+
+nano /etc/passwd, ubah id squid menjadi:
+squid:x:500:500::/var/spool/squid:/usr/sbin/nologin
+
+cd /etc/squid
+mkdir /etc/squid/ssl_cert && chmod 777 /etc/squid/ssl_cert && chown -Rf squid:squid /etc/squid/ssl_cert
+
+cd /etc/squid/ssl_cert/
+openssl req -new -newkey rsa:1024 -days 365 -nodes -x509 -keyout myCA.pem -out myCA.pem
+openssl x509 -in myCA.pem -outform DER -out myCA.der
+
+import myCA.der ke browser
+
+cd /etc/squid
+/usr/lib/squid/ssl_crtd -c -s /etc/squid/ssl_db
+chmod 777 /etc/squid/ssl_db && chown -Rf squid:squid /etc/squid/ssl_db
+
+Copy squid.conf dan store-id.pl kedalam folder /etc/squid
+chown -Rf squid:squid store-id.pl && chmod 777 store-id.pl && chown -Rf squid:squid /var/log/squid
+
+edit squid.conf, cek squid.conf apakah ada error atau tidak kemudian copy startup squid kedalam /etc/init.d
+squid -k parse
+squid -f /etc/squid/squid.conf -z
+chmod +x /etc/init.d/squid
+chkconfig --level 345 squid on atau update-rc.d squid defaults
+
+nano /etc/rc.local, tambahkan baris berikut
+/sbin/iptables -t nat -A PREROUTING -s 192.168.20.0/26 ! -d 192.168.0.0/16 -i eth0 -p tcp -m tcp --dport 80 -j DNAT --to-destination 192.168.20.13:3127
+/sbin/iptables -t nat -A PREROUTING -s 192.168.20.0/26 ! -d 192.168.0.0/16 -i eth0 -p tcp -m tcp --dport 443 -j DNAT --to-destination 192.168.20.13:3129
+echo 1024 65535 > /proc/sys/net/ipv4/ip_local_port_range
+ulimit -HSn 65535
+exit 1
+
+reboot
+
+ps ax | grep squid
+
+tail -f /var/log/squid/access.log | ccze -A -C -o noscroll
+
+squid.conf
+----------
+http_port 172.16.197.1:3127 intercept
+https_port 172.16.197.1:3129 intercept ssl-bump generate-host-certificates=on dynamic_cert_mem_cache_size=16MB cert=/etc/squid/ssl_cert/myCA.pem
+http_port 127.0.0.1:3128
+
+modprobe xt_TPROXY
+modprobe xt_socket
+modprobe nf_tproxy_core 
+modprobe xt_mark
+modprobe nf_nat
+modprobe nf_conntrack_ipv4
+modprobe nf_conntrack
+modprobe nf_defrag_ipv4
+modprobe ipt_REDIRECT
+modprobe iptable_nat
+
+# SSL BUmps or LB_Proxy
+iptables -t mangle -N DIVERT
+iptables -t mangle -A DIVERT -j MARK --set-mark 1
+iptables -t mangle -A DIVERT -j ACCEPT
+iptables -t mangle -A INPUT -j ACCEPT
+iptables -t mangle -A PREROUTING -p tcp -m socket -j DIVERT
+
+iptables -t mangle -A PREROUTING -d 192.168.1.254/32 -p tcp -m multiport --dports 80,443,3127,3128,3129 -j ACCEPT
+iptables -t mangle -A PREROUTING ! -d 192.168.1.254/32 -p tcp --dport 80 -j TPROXY --tproxy-mark 0x1/0x1 --on-port 3129
+iptables -t mangle -A PREROUTING ! -d 192.168.1.254/32 -p tcp --dport 443 -j TPROXY --tproxy-mark 0x1/0x1 --on-port 3127
+
+ip rule add fwmark 1 lookup 100
+ip route add local 0.0.0.0/0 dev lo table 100
+
+echo 0 > /proc/sys/net/ipv4/conf/lo/rp_filter
+echo 1 > /proc/sys/net/ipv4/ip_forward

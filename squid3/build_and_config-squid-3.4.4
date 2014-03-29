@@ -31,12 +31,12 @@ CHOST="x86_64-pc-Linux-gnu" CFLAGS="-march=nocona -O2 -pipe" CXXFLAGS="${CFLAGS}
 --infodir=/usr/share/info --mandir=/usr/share/man --disable-dependency-tracking \
 --enable-storeio=ufs,aufs,diskd --enable-removal-policies=lru,heap --enable-icmp \
 --enable-esi --enable-icap-client --disable-wccp --disable-wccpv2 \
---enable-kill-parent-hack --enable-cachemgr-hostname=TProxy --enable-ssl \
---enable-cache-digests --enable-Linux-netfilter --enable-follow-x-forwarded-for \
+--enable-kill-parent-hack --enable-cachemgr-hostname=tproxy --enable-ssl \
+--enable-cache-digests --enable-linux-netfilter --enable-follow-x-forwarded-for \
 --enable-x-accelerator-vary --enable-zph-qos --with-default-user=proxy \
---with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid --with-large-files \
+--with-logdir=/var/log/squid3 --with-pidfile=/var/run/squid3.pid --with-large-files \
 --enable-ltdl-convenience --with-filedescriptors=65536 --enable-ssl-crtd \
---disable-auth --build=i486-Linux-gnu build_alias=i486-Linux-gnu --enable-icap-client
+--disable-auth --build=i486-linux-gnu build_alias=i486-Linux-gnu --enable-icap-client
 
 make && make install
 

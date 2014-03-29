@@ -44,25 +44,8 @@ while (<>) {
 		$u = $X[1];
 }
 
-                # Speedtest
-if (m/^http:\/\/(.*)\/speedtest\/(.*\.(jpg|txt))\?(.*)/) {
-    $out ="http://www.speedtest.net.SQUIDINTERNAL/speedtest/" . $2 . "\n";
 
-		# Speedtest
-#} elsif ($X[1] =~ m/^http:\/\/.*\/speedtest\/([\w\d\-\.\%]*\.(jpg|txt|png|swf))\?.*/) {
-#        $out ="storeurl://testspeed.SQUIDINTERNAL/" . $1 . "\n";
-
-        # Gambar Video
-} elsif ($X[1] =~ m/^http:\/\/video.google.com\/ThumbnailServer.*/) {
-        @id = m/[&?](contentid=[\w\d\-\.\%]*)/;
-        @itag = m/[&?](itag=[\w\d\-\.\%]*)/;
-        @set = m/[&?](offsetms=[^\&\s]*)/;
-        $out ="storeurl://Thumbnail.SQUIDINTERNAL/@id&@itag&@set\n";
-
-# ==========================================================================
-# youtube with range (YOUTUBE has split its videos into segments)
-# ==========================================================================
-} elsif ($X[1] =~ m/^http(|s)\:\/\/.*youtube.*(ptracking|stream_204|player_204|gen_204).*(video_id|docid|v)\=([^\&\s]*).*/){
+if ($X[1] =~ m/^http(|s)\:\/\/.*youtube.*(ptracking|stream_204|player_204|gen_204).*(video_id|docid|v)\=([^\&\s]*).*/){
         $vid = $4 ;
         @cpn = m/[&?]cpn\=([^\&\s]*)/;
         if (defined($vid )) {
@@ -75,7 +58,7 @@ if (m/^http:\/\/(.*)\/speedtest\/(.*\.(jpg|txt))\?(.*)/) {
 	}
         $out =$x . "\n";
  
-} elsif ($X[1] =~ m/^http(|S)\:\/\/.*(youtube|google).*videoplayback.*/){
+} elsif ($X[1] =~ m/^http\:\/\/.*(youtube|googlevideo).*videoplayback.*/){
         @itag = m/[&?](itag=[0-9]*)/;
         @ids = m/[&?]id\=([^\&\s]*)/;
         @mime = m/[&?](mime\=[^\&\s]*)/;
@@ -95,19 +78,31 @@ if (m/^http:\/\/(.*)\/speedtest\/(.*\.(jpg|txt))\?(.*)/) {
         }
         @range = m/[&?](range=[^\&\s]*)/;
         $out ="http://video-srv.youtube.com.SQUIDINTERNAL/id=" . $id . "&@itag@range@mime\n";
+
+                # Speedtest
+} elsif ($X[1] =~ m/^http:\/\/(.*)\/speedtest\/(.*\.(jpg|txt))\?(.*)/) {
+    	$out ="http://www.speedtest.net.SQUIDINTERNAL/speedtest/" . $2 . "\n";
+
+        # Gambar Video
+} elsif ($X[1] =~ m/^http:\/\/video.google.com\/ThumbnailServer.*/) {
+        @id = m/[&?](contentid=[\w\d\-\.\%]*)/;
+        @itag = m/[&?](itag=[\w\d\-\.\%]*)/;
+        @set = m/[&?](offsetms=[^\&\s]*)/;
+        $out ="storeurl://Thumbnail.SQUIDINTERNAL/@id&@itag&@set\n";
+
 		
-		#redirector
+	#redirector
 } elsif ($X[1] =~ m/^http\:\/\/redirector.c.googlesyndication.com\/videoplayback\/id\/(.*)\/file\/(.*)\/(.*\.flv)/){
 		$out ="storeurl://video.google.com.SQUIDINTERNAL/redirector/" . $1 . "/" . $3 . "\n";
 		
 # ===========================================================================
 # FACEBOOK
 # ===========================================================================
-} elsif (m/^http(|s):\/\/photos-[a-z](\.ak\.fbcdn\.net)(\/.*\/)(.*\.jpg)/) {
- 		$out ="http://photos" . $1 . "/" . $2 . $3 . "\n";
+} elsif ($X[1] =~ m/^http(|s):\/\/photos-[a-z](\.ak\.fbcdn\.net)(\/.*\/)(.*\.jpg)/) {
+ 		$out ="storeurl://photos" . $1 . "/" . $2 . $3 . "\n";
 
-} elsif (m/^http(|s):\/\/[a-z][0-9]\.sphotos\.ak\.fbcdn\.net\/(.*)\/(.*)/) {
- 		$out ="http://photos.ak.fbcdn.net/" . $1 ."/". $2 . "\n";
+} elsif ($X[1] =~ m/^http(|s):\/\/[a-z][0-9]\.sphotos\.ak\.fbcdn\.net\/(.*)\/(.*)/) {
+ 		$out ="storeurl://photos.ak.fbcdn.net/" . $1 ."/". $2 . "\n";
 
 } elsif ($X[1] =~ m/^http(|S)\:\/\/(photos-[a-z]\.ak\.fbcdn\.net|a[1-8]\.s?photos\.ak\.fbcdn\.net)\/h?photos-ak-.{4}(\/.*)/) {
 		$out ="storeurl://photos.ak.fbcdn.SQUIDINTERNAL" . $2 . "\n";
@@ -352,27 +347,27 @@ if (m/^http:\/\/(.*)\/speedtest\/(.*\.(jpg|txt))\?(.*)/) {
 		$out ="storeurl://media.SQUIDINTERNAL/$1\n";
  
 		#photos-X.ak.fbcdn.net where X a-z
-} elsif ($X[1] =~ m/^http:\/\/photos-[a-z].ak.fbcdn.net\/(.*)/) {
-		$out ="http://photos.ak.fbcdn.net/" . $1  . "\n";
+} elsif ($X[1] =~ m/^http(|s):\/\/photos-[a-z].ak.fbcdn.net\/(.*)/) {
+		$out ="storeurl://photos.ak.fbcdn.net/" . $1  . "\n";
  
  		#ytimg
-} elsif ($X[1] =~ m/^http:\/\/*.ytimg\.com(.*)/) {
-        	$out ="http://cdn.ytimg.com" . $1  . "\n";
+} elsif ($X[1] =~ m/^http(|s):\/\/*.ytimg\.com(.*)/) {
+        	$out ="storeurl://cdn.ytimg.com" . $1  . "\n";
 		
 		#for yimg.com video
-} elsif ($X[1] =~ m/^http:\/\/(.*yimg.com)\/\/(.*)\/([^\/\?\&]*\/[^\/\?\&]*\.[^\/\?\&]{3,4})(\?.*)?$/) {
-		$out ="http://cdn.yimg.com//" . $3 . "\n";
+} elsif ($X[1] =~ m/^http(|s):\/\/(.*yimg.com)\/\/(.*)\/([^\/\?\&]*\/[^\/\?\&]*\.[^\/\?\&]{3,4})(\?.*)?$/) {
+		$out ="storeurl://cdn.yimg.com//" . $3 . "\n";
  
 		#for yimg.com doubled
-} elsif ($X[1] =~ m/^http:\/\/(.*?)\.yimg\.com\/(.*?)\.yimg\.com\/(.*?)\?(.*)/) {
-		$out ="http://cdn.yimg.com/"  . $3 . "\n";
+} elsif ($X[1] =~ m/^http(|s):\/\/(.*?)\.yimg\.com\/(.*?)\.yimg\.com\/(.*?)\?(.*)/) {
+		$out ="storeurl://cdn.yimg.com/"  . $3 . "\n";
  
 		#for yimg.com with &sig=
-} elsif ($X[1] =~ m/^http:\/\/(.*?)\.yimg\.com\/(.*)/) {
+} elsif ($X[1] =~ m/^http(|s):\/\/(.*?)\.yimg\.com\/(.*)/) {
 		@y = ($1,$2);
 		$y[0] =~ s/[a-z]+[0-9]+/cdn/;
 		$y[1] =~ s/&sig=.*//;
-		$out ="http://" . $y[0] . ".yimg.com/"  . $y[1] . "\n";
+		$out ="storeurl://" . $y[0] . ".yimg.com/"  . $y[1] . "\n";
 	 
 		#youjizz. We use only domain and filename
 } elsif (($X[1] =~ /media[0-9]{2,5}\.youjizz/) && (m/^http:\/\/(.*)(\.[^\.\-]*?\..*?)\/(.*)\/([^\/\?\&]*)\.([^\/\?\&]{3,4})((\?|\%).*)?$/)) {
@@ -391,25 +386,25 @@ if (m/^http:\/\/(.*)\/speedtest\/(.*\.(jpg|txt))\?(.*)/) {
 		$out ="http://cdn." . $3 . "." . $4 . "/" . $5 .  "\n";
 
                         # spicific extention
-} elsif ($X[1] =~ m/^http:\/\/(.*?)\.(jp(e?g|e|2)|gif|png|tiff?|bmp|ico|flv|wmv|3gp|mp(4|3)|exe|msi|zip|on2|mar|swf|iop|pak|kom|nzp).*?/) {
+} elsif ($X[1] =~ m/^http(|s):\/\/(.*?)\.(jp(e?g|e|2)|gif|png|tiff?|bmp|ico|flv|wmv|3gp|mp(4|3)|exe|msi|zip|on2|mar|swf|iop|pak|kom|nzp).*?/) {
             @y = ($1,$2);
          $y[0] =~ s/((cache|cdn)[-\d]*)|([a-zA-A]+-?[0-9]+(-[a-zA-Z]*)?)/cdn/;
        		$out ="http://" . $y[0] . "." . $y[1] . "\n";
 
                 # spicific extention that ends with ?
-} elsif ($X[1] =~ m/^http:\/\/(.*?)\/(.*[.](z(ip|[0-9]{2})|r(ar|[0-9]{2})|7z|bz2|gz|tar|rpm|deb|xz|webm|iop|ini|amf|ts1|apk|pak|kom|exe|ms(i|u|p)|cab|bin|mar|xpi|psf))\?(.*)/) {
+} elsif ($X[1] =~ m/^http(|s):\/\/(.*?)\/(.*[.](z(ip|[0-9]{2})|r(ar|[0-9]{2})|7z|bz2|gz|tar|rpm|deb|xz|webm|iop|ini|amf|ts1|apk|pak|kom|exe|ms(i|u|p)|cab|bin|mar|xpi|psf))\?(.*)/) {
                 $out ="storeurl://" . $1 . "/" . $2  . "." . $3 . "\n";
 
 		# spicific extention that ends whoth ?
-} elsif ($X[1] =~ m/^http:\/\/(.*)\/(.*[.](z(ip|[0-9]{2})|r(ar|[0-9]{2})|7z|bz2|gz|tar|rpm|deb|xz|webm|iop|amf|ts1|apk|exe|ms(i|u|p)|cab|bin|mar|xpi|nzp|pak|kom|iop|3gp|mp(3|4)|flv|(m|f)1v|(m|f)4v|on2|fid|aac|asf|flac|mpc|nsv|og(g|m|a)|avi|mov|wm(a|v)|mp(e?g|a|e|v)|mk(a|v)))(.*)/) {
+} elsif ($X[1] =~ m/^http(|s):\/\/(.*)\/(.*[.](z(ip|[0-9]{2})|r(ar|[0-9]{2})|7z|bz2|gz|tar|rpm|deb|xz|webm|iop|amf|ts1|apk|exe|ms(i|u|p)|cab|bin|mar|xpi|nzp|pak|kom|iop|3gp|mp(3|4)|flv|(m|f)1v|(m|f)4v|on2|fid|aac|asf|flac|mpc|nsv|og(g|m|a)|avi|mov|wm(a|v)|mp(e?g|a|e|v)|mk(a|v)))(.*)/) {
 		$out ="storeurl://" . $1 . "/" . $2  . "." . $3 . "\n";
  	
                 # spicific extention that ends with ?
-} elsif ($X[1] =~ m/^http:\/\/(.*?)\/(.*?)\.(jp(e?g|e|2)|gif|png|tiff?|bmp|ico|flv|wmv|3gp|mp(4|3)|exe|msi|zip|on2|mar|rar|cab|amf|swf|iop|pak|nzp)(.*)/) {
+} elsif ($X[1] =~ m/^http(|s):\/\/(.*?)\/(.*?)\.(jp(e?g|e|2)|gif|png|tiff?|bmp|ico|flv|wmv|3gp|mp(4|3)|exe|msi|zip|on2|mar|rar|cab|amf|swf|iop|pak|nzp)(.*)/) {
                 $out ="http://" . $1 . "/" . $2  . "." . $3 . "\n";
 
 		#general purpose for cdn servers. add above your specific servers.
-} elsif ($X[1] =~ m/^http:\/\/([0-9.]*?)\/\/(.*?)\.(.*)\?(.*?)/) {
+} elsif ($X[1] =~ m/^http(|s):\/\/([0-9.]*?)\/\/(.*?)\.(.*)\?(.*?)/) {
 		$out ="http://squid-cdn-url//" . $2  . "." . $3 . "\n";
 
 		# all that ends with ;

@@ -98,13 +98,13 @@ if ($X[1] =~ m/^http:\/\/(.*)\/speedtest\/(.*\.(jpg|txt))\?(.*)/) {
 # ===========================================================================
 # FACEBOOK
 # ===========================================================================
-} elsif ($X[1] =~ m/^http\:\/\/[a-zA-Z0-9\-\_\.\%]*fbcdn[a-zA-Z0-9\-\_\.\%]*net\/safe\_image\.php\?(.*)/) {
+} elsif ($X[1] =~ m/^http(|s)\:\/\/[a-zA-Z0-9\-\_\.\%]*fbcdn[a-zA-Z0-9\-\_\.\%]*net\/safe\_image\.php\?(.*)/) {
         $out ="storeurl://fbcdn.SQUIDINTERNAL/" . $1  . "\n";
 
-} elsif ($X[1] =~ m/^http\:\/\/[a-zA-Z0-9\-\_\.\%]*fbcdn[a-zA-Z0-9\-\_\.\%]*net\/rsrc\.php\/(.*)/) {
+} elsif ($X[1] =~ m/^http(|s)\:\/\/[a-zA-Z0-9\-\_\.\%]*fbcdn[a-zA-Z0-9\-\_\.\%]*net\/rsrc\.php\/(.*)/) {
         $out ="storeurl://fbcdn.SQUIDINTERNAL/" . $1  . "\n";
 
-} elsif ($X[1] =~ m/^http\:\/\/[a-zA-Z0-9\-\_\.\%]*fbcdn[a-zA-Z0-9\-\_\.\%]*net\/[a-zA-Z0-9\-\_\.\%]*\/(.*)/) {
+} elsif ($X[1] =~ m/^http(|s)\:\/\/[a-zA-Z0-9\-\_\.\%]*fbcdn[a-zA-Z0-9\-\_\.\%]*net\/[a-zA-Z0-9\-\_\.\%]*\/(.*)/) {
         $out ="storeurl://fbcdn.SQUIDINTERNAL/" . $1  . "\n";
 
 # ===========================================================================

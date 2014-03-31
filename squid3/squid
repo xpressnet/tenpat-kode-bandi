@@ -68,7 +68,7 @@ start () {
             fi
      
             umask 027
-            ulimit -n 65535
+            ulimit -n 65536
      
                    
             cd $cache_dir

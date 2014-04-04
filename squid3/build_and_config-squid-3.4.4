@@ -26,8 +26,8 @@ http://www.gentoo-wiki.info/Safe_Cflags
 
 CHOST="x86_64-pc-Linux-gnu" CFLAGS="-march=nocona -O2 -pipe" CXXFLAGS="${CFLAGS}" \
 ./configure --prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin \
---libexecdir=/usr/lib/squid --sysconfdir=/etc/squid --localstatedir=/var \
---libdir=/usr/lib --includedir=/usr/include --datadir=/usr/share/squid \
+--libexecdir=/usr/lib/squid3 --sysconfdir=/etc/squid3 --localstatedir=/var \
+--libdir=/usr/lib --includedir=/usr/include --datadir=/usr/share/squid3 \
 --infodir=/usr/share/info --mandir=/usr/share/man --disable-dependency-tracking \
 --enable-storeio=ufs,aufs,diskd --enable-removal-policies=lru,heap --enable-icmp \
 --enable-esi --enable-icap-client --disable-wccp --disable-wccpv2 \
@@ -35,7 +35,7 @@ CHOST="x86_64-pc-Linux-gnu" CFLAGS="-march=nocona -O2 -pipe" CXXFLAGS="${CFLAGS}
 --enable-cache-digests --enable-linux-netfilter --enable-follow-x-forwarded-for \
 --enable-x-accelerator-vary --enable-zph-qos --with-default-user=proxy \
 --with-logdir=/var/log/squid3 --with-pidfile=/var/run/squid3.pid --with-large-files \
---enable-ltdl-convenience --with-filedescriptors=65536 --enable-ssl-crtd \
+--enable-ltdl-convenience --with-filedescriptors=65536 --enable-ssl-crtd --with-openssl=/usr/lib/ssl \
 --disable-auth --build=i486-linux-gnu build_alias=i486-Linux-gnu --enable-icap-client
 
 make && make install

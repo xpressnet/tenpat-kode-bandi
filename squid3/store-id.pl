@@ -11,9 +11,50 @@ while (<>) {
        $u = $X[1];
 
 #==============================================================================================
+# Speedtest
+#==============================================================================================
+if (m/^http:\/\/.*\/speedtest\/(upload.php|[\w\d\-\.\%]*\.(jpg|txt|png|swf|php))\?.*/) {
+		print $X[0] . " OK store-id=storeurl://testspeed.SQUIDINTERNAL/" . $1 . "\n";
+	
+#==============================================================================================
+# Fix Youtube With Referer LOG
+#==============================================================================================
+} elsif ($X[1] =~ m/^http(|s)\:\/\/.*youtube.*(ptracking|stream_204|player_204|gen_204).*(video_id|docid|v)\=([^\&\s]*).*/){
+		$vid = $4 ;
+		@cpn = m/[&?]cpn\=([^\&\s]*)/;
+		$fn = "/var/log/squid/@cpn";
+		unless (-e $fn) {
+		open FH,">".$fn ;
+		print FH "$vid\n";
+		close FH;
+		}
+		print $x . $X[1] . "\n";
+
+} elsif ($X[1] =~ m/^http\:\/\/.*(youtube|google).*videoplayback.*/){
+		@itag = m/[&?](itag=[0-9]*)/;
+		@ids = m/[&?]id\=([^\&\s]*)/;
+		@mime = m/[&?](mime\=[^\&\s]*)/;
+		@cpn = m/[&?]cpn\=([^\&\s]*)/;
+		if (defined($cpn[0])) {
+		$fn = "/tmp/@cpn";
+		if (-e $fn) {
+		open FH,"<".$fn ;
+		$id  = <FH>;
+		chomp $id ;
+		close FH ;
+		} else {
+		$id = $ids[0] ;
+		}
+		} else {
+		$id = $ids[0] ;
+		}
+		@range = m/[&?](range=[^\&\s]*)/;
+		print $x . "http://video-srv.youtube.com.SQUIDINTERNAL/id=" . $id . "&@itag@range@mime\n";
+
+#==============================================================================================
 #facebook
 #==============================================================================================
-if (m/^http(|s):\/\/photos-[a-z](\.ak\.fbcdn\.net)(\/.*\/)(.*\.(png|gif|jpg|mp4|js|css))/) {
+} elsif (m/^http(|s):\/\/photos-[a-z](\.ak\.fbcdn\.net)(\/.*\/)(.*\.(png|gif|jpg|mp4|js|css))/) {
 		print $X[0] . " OK store-id=storeurl://photos" . $1 . "/" . $2 . $3  . "\n";
 
 } elsif (m/^http(|s)\:\/\/fbstatic[a-zA-Z0-9]\-\.net\/rsrc\.php\/(.*)/) {
@@ -39,27 +80,6 @@ if (m/^http(|s):\/\/photos-[a-z](\.ak\.fbcdn\.net)(\/.*\/)(.*\.(png|gif|jpg|mp4|
 
 } elsif (m/^http(|s)\:\/\/fbcdn\.net(\/(profile|photos|sphotos)-ak-)*[0-9]?(.*)/) {
         print $X[0] . " OK store-id=storeurl://facebook.SQUIDINTERNAL" . $2  . "fb" .  $5  . "\n";
-
-#==============================================================================================
-# Fix Youtube With Referer LOG
-#==============================================================================================
-} elsif ($X[1] =~ m/^http\:\/\/.*(youtube|google).*videoplayback.*/){
-		@itag = m/[&?](itag=[0-9]*)/;
-		@CPN = m/[&?]cpn\=([a-zA-Z0-9\-\_]*)/;
-		@IDS = m/[&?]id\=([a-zA-Z0-9\-\_]*)/;
-		$id = &GetID($CPN[0], $IDS[0]);
-		@range = m/[&?](range=[^\&\s]*)/;
-		print $X[0] . " OK store-id=http://fathayu.SQUIDINTERNAL/" . $id . "&@itag@range\n";
-		
-} elsif ($X[1] =~ m/(youtube|google).*videoplayback\?/ ){
-		@itag = m/[&?](itag=[0-9]*)/;
-		@id = m/[&?](id=[^\&]*)/;
-		@redirect = m/[&?](redirect_counter=[^\&]*)/;
-		print $X[0] . " OK store-id=http://fathayu.SQUIDINTERNAL/";
-
-		#Speedtest
-} elsif (m/^http:\/\/(.*)\/speedtest\/(.*\.(jpg|txt|gif|php|png))\?(.*)/) {
-		print $X[0] . " OK store-id=http://www.speedtest.net.SQUIDINTERNAL/speedtest/" . $1 . "";
 
         #reverbnation
 } elsif (m/^http:\/\/[a-z0-9]{4}\.reverbnation\.com\/.*\/([0-9]*).*/) {
@@ -217,35 +237,7 @@ if (m/^http(|s):\/\/photos-[a-z](\.ak\.fbcdn\.net)(\/.*\/)(.*\.(png|gif|jpg|mp4|
         print $X[0] . " OK store-id=http://" . $1 . "/" . $2  . "\n";
 
 } else {
-        print $X[0] . $_ . $X[1] . "OK store-id=sucks\n";
+        print $X[0] . $x . $_ . $X[1] . "OK store-id=sucks\n";
+		print $X[0] . $_ . $X[1] . "\n";
 	}
-}
-
-sub GetID
-{
-$id = "";
-use File::ReadBackwards;
-my $lim = 200 ;
-my $ref_log = File::ReadBackwards->new('/var/log/squid3/referer.log');
-while (defined($line = $ref_log->readline))
-{
-if ($line =~ m/.*youtube.*\/watch\?.*v=([a-zA-Z0-9\-\_]*).*\s.*id=$IDS[0].*/){
-$id = $1;
-last;
-}
-if ($line =~ m/.*youtube.*\/.*cpn=$CPN[0].*[&](video_id|docid|v)=([a-zA-Z0-9\-\_]*).*/){
-$id = $2;
-last;
-}
-if ($line =~ m/.*youtube.*\/.*[&?](video_id|docid|v)=([a-zA-Z0-9\-\_]*).*cpn=$CPN[0].*/){
-$id = $2;
-last;
-}
-last if --$lim <= 0;
-}
-if ($id eq ""){
-$id = $IDS[0];
-}
-$ref_log->close();
-return $id;
 }

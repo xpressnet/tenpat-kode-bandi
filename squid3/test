@@ -1,15 +1,9 @@
 ./configure --prefix=/usr \
---bindir=/usr/bin \
---sbindir=/usr/sbin \
---libexecdir=/usr/lib/squid3 \
---datadir=/usr/share/squid3 \
---sysconfdir=/etc/squid3 \
 --localstatedir=/var \
---libdir=/usr/lib \
---includedir=/usr/include \
---datadir=/usr/share/squid3 \
---infodir=/usr/share/info \
---mandir=/usr/share/man \
+--libexecdir=${prefix}/lib/squid3 \
+--srcdir=. \
+--datadir=${prefix}/share/squid3 \
+--sysconfdir=/etc/squid3 \
 --enable-inline \
 --enable-gnuregex \
 --enable-async-io=24 \

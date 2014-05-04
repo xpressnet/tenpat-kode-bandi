@@ -11,8 +11,9 @@
 --infodir=/usr/share/info \
 --mandir=/usr/share/man \
 --enable-inline \
---enable-async-io=24 \
---enable-storeio="ufs,aufs,diskd" \
+--enable-gnuregex \
+--enable-async-io=64 \
+--enable-storeio="ufs,aufs,diskd,rock" \
 --enable-removal-policies="lru,heap" \
 --enable-delay-pools \
 --enable-cache-digests \
@@ -34,6 +35,7 @@
 --enable-ltdl-convenience \
 --disable-translation \
 --disable-dependency-tracking \
+--with-aufs-threads=64 \
 --with-large-files \
 --with-cppunit-basedir=/usr \
 --with-logdir=/var/log/squid3 \

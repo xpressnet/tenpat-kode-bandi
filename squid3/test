@@ -13,7 +13,7 @@
 --enable-inline \
 --enable-gnuregex \
 --enable-async-io=24 \
---enable-storeio="ufs,aufs,diskd,rock,coss" \
+--enable-storeio="ufs,aufs,diskd,rock" \
 --enable-removal-policies="lru,heap" \
 --enable-delay-pools \
 --enable-cache-digests \

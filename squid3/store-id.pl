@@ -134,7 +134,7 @@ if (m/^https?\:\/\/(www|c|s)\.youtube\.com\/(ptracking|stream_204|player_204|gen
 # ============================================================= #
 # Speedtest
 # ============================================================= #
-} elsif ($X[0]=~ m/^http\:\/\/.*\/speedtest\/(.*\.(jpg|txt)).*/) {
+} elsif (m/^http\:\/\/.*\/speedtest\/(.*\.(jpg|txt)).*/) {
         print "OK store-id=http://speedtest.net.squid.internal/" . $1 . "\n";
        
 # ============================================================= #
@@ -147,7 +147,7 @@ if (m/^https?\:\/\/(www|c|s)\.youtube\.com\/(ptracking|stream_204|player_204|gen
 # Mediafire
 # ========================================== #
 #} elsif ($X[0]=~ m/^https?\:\/\/199\.91\.15\d\.\d*\/\w{12}\/(\w*)\/(.*)/) {#
-	print "OK store-id=http://www.mediafire.com.squid.internal/" . $1 ."/" . $2 . "\n";
+#	print "OK store-id=http://www.mediafire.com.squid.internal/" . $1 ."/" . $2 . "\n";
 
 # ========================================== #
 # Filesonic

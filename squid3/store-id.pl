@@ -104,31 +104,31 @@ if (m/^https?\:\/\/(www|c|s)\.youtube\.com\/(ptracking|stream_204|player_204|gen
 # ============================================================= #
 # Fileserve
 # ============================================================= #
-#} elsif ($X[0]=~ m/^http:\/\/fs\w*\.fileserve\.com\/file\/(\w*)\/[\w-]*\.\/(.*)/) {
+#} elsif (m/^http:\/\/fs\w*\.fileserve\.com\/file\/(\w*)\/[\w-]*\.\/(.*)/) {
 #	print "OK store-id=http://www.fileserve.com.squid.internal/" . $1 . "./" . $2 . "\n";
 
 # ============================================================= #
 # youku
 # ============================================================= #
-#} elsif ($x=~ m/^http\:\/\/.*\/youku\/(.*)\/(.*\.flv)/){
+#} elsif (m/^http\:\/\/.*\/youku\/(.*)\/(.*\.flv)/){
 #        print "OK store-id=http://video.youku.com.squid.internal/youku/" . $2 . "\n";
 
 # ============================================================= #
 # daily motion
 # ============================================================= #
-#} elsif ($x=~ m/^http\:\/\/vid2.ak.dmcdn.net\/(.*)\/(.*)\/video\/(.*)\/(.*\.flv)/){
+#} elsif (m/^http\:\/\/vid2.ak.dmcdn.net\/(.*)\/(.*)\/video\/(.*)\/(.*\.flv)/){
 #        print "OK store-id=http://video.dailymotin.com.squid.internal/dailymotion/" . $2 . "/" . $4 . "\n"; 
 
 # ============================================================= #
 # Sourcefrog
 # ============================================================= #
-#} elsif ($X[0]=~ m/^http:\/\/.*\.dl\.sourceforge\.net\/(.*)/) {
+#} elsif (m/^http:\/\/.*\.dl\.sourceforge\.net\/(.*)/) {
 #        print "OK store-id=http://dl.sourceforge.net.squid.internal/" . $1 . "\n";
 
 # ============================================================= #
 # zynga
 # ============================================================= #
-#} elsif ($X[0]=~ m/^https?:\/\/zynga[1-9]?-a.(akamaihd.net.*)/) {
+#} elsif (m/^https?:\/\/zynga[1-9]?-a.(akamaihd.net.*)/) {
 #        print "OK store-id=http://zynga-akamaihd.net.squid.internal/" . $1 . "\n";
 
 # ============================================================= #
@@ -146,13 +146,13 @@ if (m/^https?\:\/\/(www|c|s)\.youtube\.com\/(ptracking|stream_204|player_204|gen
 # ========================================== #
 # Mediafire
 # ========================================== #
-#} elsif ($X[0]=~ m/^https?\:\/\/199\.91\.15\d\.\d*\/\w{12}\/(\w*)\/(.*)/) {#
+#} elsif (m/^https?\:\/\/199\.91\.15\d\.\d*\/\w{12}\/(\w*)\/(.*)/) {#
 #	print "OK store-id=http://www.mediafire.com.squid.internal/" . $1 ."/" . $2 . "\n";
 
 # ========================================== #
 # Filesonic
 # ========================================== #
-#} elsif ($X[0]=~ m/^http\:\/\/s[0-9]*\.filesonic\.com\/download\/([0-9]*)\/(.*)/) {
+#} elsif (m/^http\:\/\/s[0-9]*\.filesonic\.com\/download\/([0-9]*)\/(.*)/) {
 #	print "OK store-id=http://www.filesonic.com.squid.internal/" . $1 . "\n";
 
 # ========================================== #
@@ -238,7 +238,7 @@ if (m/^https?\:\/\/(www|c|s)\.youtube\.com\/(ptracking|stream_204|player_204|gen
 # ============================================================= #
 # cdn, varialble 1st path
 # ============================================================= #
-#} elsif (($X[0]=~ /filehippo/) && (m/^http:\/\/(.*?)\.(.*?)\/(.*?)\/(.*)\.([a-z0-9]{3,4})(\?.*)?/)) {
+#} elsif ((/filehippo/) && (m/^http:\/\/(.*?)\.(.*?)\/(.*?)\/(.*)\.([a-z0-9]{3,4})(\?.*)?/)) {
 #        @y = ($1,$2,$4,$5);
 #        $y[0] =~ s/[a-z0-9]{2,5}/cdn./;
 #        print "OK store-id=http://" . $y[0] . $y[1] . "/" . $y[2] . "." . $y[3] . "\n";
@@ -246,25 +246,25 @@ if (m/^https?\:\/\/(www|c|s)\.youtube\.com\/(ptracking|stream_204|player_204|gen
 # ============================================================= #
 # Rapidshare
 # ============================================================= #
-#} elsif (($X[0]=~ /rapidshare/) && (m/^http:\/\/(([A-Za-z]+[0-9-.]+)*?)([a-z]*\.[^\/]{3}\/[a-z]*\/[0-9]*)\/(.*?)\/([^\/\?\&]{4,})$/)) {
+#} elsif ((/rapidshare/) && (m/^http:\/\/(([A-Za-z]+[0-9-.]+)*?)([a-z]*\.[^\/]{3}\/[a-z]*\/[0-9]*)\/(.*?)\/([^\/\?\&]{4,})$/)) {
 #        print "OK store-id=http://cdn." . $3 . "/squid.internal/" . $5 . "\n";
 
 # ============================================================= #
 # for yimg.com video
 # ============================================================= #
-} elsif ($X[0]=~ m/^http:\/\/(.*yimg.com)\/\/(.*)\/([^\/\?\&]*\/[^\/\?\&]*\.[^\/\?\&]{3,4})(\?.*)?$/) {
+} elsif (m/^http:\/\/(.*yimg.com)\/\/(.*)\/([^\/\?\&]*\/[^\/\?\&]*\.[^\/\?\&]{3,4})(\?.*)?$/) {
         print "OK store-id=http://cdn.yimg.com/" . $3 . "\n";
 
 # ============================================================= #
 # for yimg.com doubled
 # ============================================================= #
-} elsif ($X[0]=~ m/^http:\/\/(.*?)\.yimg\.com\/(.*?)\.yimg\.com\/(.*?)\?(.*)/) {
+} elsif (m/^http:\/\/(.*?)\.yimg\.com\/(.*?)\.yimg\.com\/(.*?)\?(.*)/) {
         print "OK store-id=http://cdn.yimg.com/"  . $3 . \"n";
 
 # ============================================================= #
 # for yimg.com with &sig=
 # ============================================================= #
-} elsif ($X[0]=~ m/^http:\/\/([^\.]*)\.yimg\.com\/(.*)/) {
+} elsif (m/^http:\/\/([^\.]*)\.yimg\.com\/(.*)/) {
         @y = ($1,$2);
         $y[0] =~ s/[a-z]+([0-9]+)?/cdn/;
         $y[1] =~ s/&sig=.*//;
@@ -281,11 +281,11 @@ if (m/^https?\:\/\/(www|c|s)\.youtube\.com\/(ptracking|stream_204|player_204|gen
 # ============================================================= #
 # general purpose for cdn servers. add above your specific servers.
 # ============================================================= #
-#} elsif ($X[0]=~ m/^http:\/\/([0-9.]*?)\/\/(.*?)\.(.*)\?(.*?)/) {
+#} elsif (m/^http:\/\/([0-9.]*?)\/\/(.*?)\.(.*)\?(.*?)/) {
 #        print "OK store-id=http://squid-cdn-url/" . $2  . "." . $3 . "\n";
 
 # spicific extention that ends with ?
-#} elsif ($X[0]=~ m/^http\:\/\/(.*?)\/(.*?)\.(jp(e?g|e|2)|gif|png|tiff?|bmp|ico|flv|on2)(.*)/) {
+#} elsif (m/^http\:\/\/(.*?)\/(.*?)\.(jp(e?g|e|2)|gif|png|tiff?|bmp|ico|flv|on2)(.*)/) {
 #		print "OK store-id=http://" . $1 . "/" . $2  . "." . $3 . "\n";
 
 # ============================================================= #
@@ -294,7 +294,7 @@ if (m/^https?\:\/\/(www|c|s)\.youtube\.com\/(ptracking|stream_204|player_204|gen
 } elsif (m/^https?:\/\/(.*?)\.(iop|pak|nzp|kom|mdb|3gp|mp(3|4)|flv|(m|f)4v|on2|fid|avi|mov|wm(a|v)|(mp(e?g|a|e|1|2))|mk(a|v)|jp(e?g|e|2)|gif|png|tiff?|bmp|tga|svg|ico|swf|exe|ms(i|u|p)|cab|psf|mar|bin|z(ip|[0-9]{2})|r(ar|[0-9]{2})|7z)\?/) {
         print "OK store-id=http://" . $1 . "/" . $2  . "." . $3 . "\n";
 
-#} elsif ($X[0]=~ m/^http:\/\/(.*?)\.(iop|pak|nzp|kom|mdb|3gp|mp(3|4)|flv|(m|f)4v|on2|fid|avi|mov|wm(a|v)|(mp(e?g|a|e|1|2))|mk(a|v)|jp(e?g|e|2)|gif|png|tiff?|bmp|tga|svg|ico|swf|exe|ms(i|u|p)|cab|psf|mar|bin|z(ip|[0-9]{2})|r(ar|[0-9]{2})|7z)$/) {
+#} elsif (m/^http:\/\/(.*?)\.(iop|pak|nzp|kom|mdb|3gp|mp(3|4)|flv|(m|f)4v|on2|fid|avi|mov|wm(a|v)|(mp(e?g|a|e|1|2))|mk(a|v)|jp(e?g|e|2)|gif|png|tiff?|bmp|tga|svg|ico|swf|exe|ms(i|u|p)|cab|psf|mar|bin|z(ip|[0-9]{2})|r(ar|[0-9]{2})|7z)$/) {
 #        print "OK store-id=http://" . $1 . "/" . $2  . "." . $3 . "\n";
 
 # ============================================================= #
@@ -302,7 +302,7 @@ if (m/^https?\:\/\/(www|c|s)\.youtube\.com\/(ptracking|stream_204|player_204|gen
 #http://cdn1-28.projectplaylist.com
 #http://s1sdlod041.bcst.cdn.s1s.yimg.com
 # ============================================================= #
-#} elsif ($X[0]=~ m/^http:\/\/(.*?)(\.[^\.\-]*?\..*?)\/([^\?\&\=]*)\.([\w\d]{2,4})\??.*$/) {
+#} elsif (m/^http:\/\/(.*?)(\.[^\.\-]*?\..*?)\/([^\?\&\=]*)\.([\w\d]{2,4})\??.*$/) {
 #        @y = ($1,$2,$3,$4);
 #        $y[0] =~ s/([a-z][0-9][a-z]dlod[\d]{3})|((cache|cdn)[-\d]*)|([a-zA-A]+-?[0-9]+(-[a-zA-Z]*)?)/cdn/;
 #        print "OK store-id=http://" . $y[0] . $y[1] . "/" . $y[2] . "." . $y[3] . "\n";

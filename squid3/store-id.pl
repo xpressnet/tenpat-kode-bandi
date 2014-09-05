@@ -140,8 +140,8 @@ if (m/^https?\:\/\/(www|c|s)\.youtube\.com\/(ptracking|stream_204|player_204|gen
 # ============================================================= #
 # Blogspot
 # ============================================================= #
-#} elsif ($X[0]=~ m/^http:\/\/[1-4]\.bp\.blogspot\.com.*\.(jpg|gif|png|jpeg)/) {
-#        print "OK store-id=http://blog-cdn.squid.internal/" . $1  . "\n";
+} elsif (m/^http:\/\/[1-4]\.bp\.blogspot\.com.*\.(jpg|gif|png|jpeg)/) {
+        print "OK store-id=http://blog-cdn.squid.internal/" . $1  . "\n";
 
 # ========================================== #
 # Mediafire
@@ -190,7 +190,7 @@ if (m/^https?\:\/\/(www|c|s)\.youtube\.com\/(ptracking|stream_204|player_204|gen
 # ============================================================= #      
 # Google
 # ============================================================= #
-} elsif ($X[0]=~ m/^https?\:\/\/www\.google-analytics\.com\/__utm\.gif\?.*/) {
+} elsif (m/^https?\:\/\/www\.google-analytics\.com\/__utm\.gif\?.*/) {
         print "OK store-id=http://www.google-analytics.com/__utm.gif\n";
 
 # ============================================================= #

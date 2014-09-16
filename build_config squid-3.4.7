@@ -1,5 +1,6 @@
 ./configure --prefix=/usr \
---exec_prefix=/usr \
+--exec-prefix=/usr \
+--srcdir=. \
 --bindir=/usr/sbin \
 --sbindir=/usr/sbin \
 --libexecdir=/usr/lib/squid \
@@ -10,6 +11,10 @@
 --datadir=/usr/share/squid \
 --infodir=/usr/share/info \
 --mandir=/usr/share/man \
+--x-includes=/usr/include \
+--x-libraries=/usr/lib \
+--enable-shared=yes \
+--enable-static=no \
 --enable-http-violations \
 --enable-gnuregex \
 --enable-async-io=24 \
@@ -29,17 +34,24 @@
 --enable-useragent-log \
 --enable-carp \
 --enable-esi \
---enable-kill-parent-hack \
 --enable-cache-digests \
 --enable-follow-x-forwarded-for \
 --enable-x-accelerator-vary \
 --enable-zph-qos \
 --enable-ltdl-convenience \
 --enable-delay-pools \
+--enable-epoll \
+--enable-default-hostsfile=/etc/hosts \
+--enable-mit=/usr \
+--disable-kill-parent-hack \
+--disable-poll \
+--disable-maintainer-mode \
+--disable-silent-rules \
 --disable-dependency-tracking \
 --disable-strict-error-checking \
---disable-wccp \
+--disable-hostname-checks \
 --disable-wccpv2 \
+--disable-wccp \
 --disable-ident-lookups \
 --disable-auth \
 --disable-icmp \

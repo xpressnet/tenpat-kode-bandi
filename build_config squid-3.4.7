@@ -43,7 +43,12 @@
 --enable-epoll \
 --enable-default-hostsfile=/etc/hosts \
 --enable-mit=/usr \
---disable-kill-parent-hack \
+--enable-kill-parent-hack \
+--enable-basic-auth-helpers="LDAP,MSNT,NCSA,PAM,SASL,SMB,YP,DB,POP3,getpwnam,squid_radius_auth,multi-domain-NTLM" \
+--enable-ntlm-auth-helpers=smb_lm, \
+--enable-digest-auth-helpers=ldap,password \
+--enable-negotiate-auth-helpers=squid_kerb_auth \
+--enable-auth \
 --disable-poll \
 --disable-maintainer-mode \
 --disable-silent-rules \
@@ -53,7 +58,6 @@
 --disable-wccpv2 \
 --disable-wccp \
 --disable-ident-lookups \
---disable-auth \
 --disable-icmp \
 --disable-ipv6 \
 --with-aio \
@@ -63,6 +67,7 @@
 --with-pthreads \
 --with-libcap \
 --with-openssl \
+--with-open-ssl=/usr/local/openssl/openssl.cnf \
 --with-included-ltdl \
 --with-default-user=proxy \
 --with-logdir=/var/log/squid \

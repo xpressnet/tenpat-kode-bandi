@@ -1,0 +1,19 @@
+# GMAIL
+acl broken_dst dst 173.194.38.181/32 173.194.38.182/32 173.194.117.117/32 173.194.117.118/32
+acl broken_dst dst 74.125.200.17-74.125.200.19
+acl broken_dst dst 74.125.200.83/32 74.125.130.83/32
+acl broken_dst dst 74.125.130.17-74.125.130.19
+
+# BANK BRI
+acl broken_dst dst 202.59.0.0/16 139.0.7.125/32 112.215.107.0/24
+
+# Bank Mandiri
+acl broken_dst dst 114.57.160.206/32 112.215.62.232/32
+
+# Pirate King
+acl broken_dst dst 203.90.249.82/32
+acl broken_dst dst 23.229.158.197/32
+acl broken_dst dst 203.90.249.90/32
+acl broken_dst dst 118.98.97.100/32 103.11.40.101/32
+
+ssl_bump none broken_dst

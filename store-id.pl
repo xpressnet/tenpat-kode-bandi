@@ -5,9 +5,9 @@
 use IO::File;
 $|=1;
 STDOUT->autoflush(1);
-$debug=0;																## recommended:0
+$debug=0;																     ## recommended:0
 $bypassallrules=0;														## recommended:0
-$sucks="";																## unused
+$sucks="";																    ## unused
 $sucks="sucks" if ($debug>=1);
 $timenow="";
 $printtimenow=1;  														## print timenow: 0|1
@@ -26,7 +26,7 @@ my $myURL = $_;
 $a = $X[0]; 				## channel id
 $b = $X[1]; 				## url
 $c = $X[2]; 				## ip address
-$u = $b; 					## url
+$u = $b; 					 ## url
 
 if ($bypassallrules){
  $out="$u"; 				## map 1:1
@@ -37,17 +37,23 @@ if ($bypassallrules){
 } elsif ($u=~ m/^https?\:\/\/redirector.c.googlesyndication.com\/videoplayback\/id\/(.*)\/file\/(.*)\/(.*\.flv)/){
     $out="OK store-id=http://video.google.com.squid.internal/redirector/" . $1 . "/" . $3 ;
 
+} elsif ($u=~ m/^https?\:\/\/video.google.com\/ThumbnailServer.*/) {
+    @id = m/[&?](contentid=[\w\d\-\.\%]*)/;
+    @itag = m/[&?](itag=[\w\d\-\.\%]*)/;
+    @set = m/[&?](offsetms=[^\&\s]*)/;
+    $out="OK store-id=storeurl://Thumbnail.squid.internal/@id&@itag&@set";
+
 # ============================================================= #
 # Facebook
 # ============================================================= #
 } elsif ($u=~ m/http.*\.(fbcdn|akamaihd)\.net\/h(profile|photos).*[\d\w].*\/([\w]\d+x\d+\/.*\.[\d\w]{3}).*/) {
-	$out="OK store-id=http://fbcdn.net.squid.internal/" . $2 . "/" . $3 ;
+	  $out="OK store-id=http://fbcdn.net.squid.internal/" . $2 . "/" . $3 ;
 
 } elsif ($u=~ m/^http(.*)static(.*)(akamaihd|fbcdn).net\/rsrc.php\/(.*\/.*\/(.*).(js|css|png|gif))(\?(.*)|$)/) {
-	$out="OK store-id=http://fbcdn.net.squid.internal/static/" . $5 . "." . $6 ;
+	  $out="OK store-id=http://fbcdn.net.squid.internal/static/" . $5 . "." . $6 ;
 
 } elsif ($u=~ m/^https?:\/\/[a-zA-Z0-9\-\_\.\%]*(fbcdn|akamaihd)[a-zA-Z0-9\-\_\.\%]*net\/rsrc\.php\/(.*)/) { 
-	$out="OK store-id=http://cdn.fbcdn/" . $2 ;
+	  $out="OK store-id=http://cdn.fbcdn/" . $2 ;
 
 } elsif ($u=~ m/^https?\:\/\/.*(profile|photo|creative).*\.ak\.fbcdn\.net\/((h|)(profile|photos)-ak-)(snc|ash|prn)[0-9]?(.*)/) {
     $out="OK store-id=http://fbcdn.net.squid.internal/" . $2  . "fb" .  $6 ;
@@ -56,7 +62,7 @@ if ($bypassallrules){
     $out="OK store-id=http://fbcdn.net.squid.internal/" . $2  . $5 .  $6 ;
 
 } elsif ($u=~ m/^https?\:\/\/video\.(.*)\.fbcdn\.net\/(.*?)\/([0-9_]+\.(mp4|flv|avi|mkv|m4v|mov|wmv|3gp|mpg|mpeg)?)(.*)/) {
-	$out="OK store-id=http://video.ak.fbcdn.net/" . $1 ;
+	  $out="OK store-id=http://video.ak.fbcdn.net/" . $1 ;
 
 # ============================================================= #
 # Ytimg
@@ -65,51 +71,81 @@ if ($bypassallrules){
     $out="OK store-id=http://ytimg.com.squid.internal/" . $1 ;
 
 } elsif ($u=~ m/^https?\:\/\/lh[0-9]?.ggpht.com\/(.*?)\/(.*?)\/(.*?)\/(.*)\/(.*)?$/) {
-	$out="OK store-id=http://ggpht.squid.internal/"  . $1 . "/" .  $2 . "/" . $4 .  "/" .  $5 ;
+	  $out="OK store-id=http://ggpht.squid.internal/"  . $1 . "/" .  $2 . "/" . $4 .  "/" .  $5 ;
 		
 # ============================================================= #
 # Google Analytics
 # ============================================================= #
 } elsif ($u=~ m/^https?\:\/\/.*utm.gif.*/) {
-	$out="OK store-id=http://google-analytics.squid.internal/__utm.gif";
+	  $out="OK store-id=http://google-analytics.squid.internal/__utm.gif";
 
 # ============================================================= #
 # Speedtest
 # ============================================================= #
 } elsif ($u=~ m/^https?\:\/\/.*\/speedtest\/(.*\.(jpg|txt)).*/) {
-	$out="OK store-id=http://speedtest.squid.internal/" . $1;
+	  $out="OK store-id=http://speedtest.squid.internal/" . $1;
 
 # ============================================================= #
 # Video MP4,3GP,FLV
 # ============================================================= #
 } elsif ($u=~ m/^https?\:\/\/.*\/(.*\..*(mp4|3gp|flv))\?.*/) {
-	$out="OK store-id=http://video-file.squid.internal/" . $1;
+	  $out="OK store-id=http://video-file.squid.internal/" . $1;
 
 # ============================================================= #
 # Radiobutton
 # ============================================================= #
 } elsif ($u=~ m/^https?\:\/\/c2lo\.reverbnation\.com\/audio_player\/ec_stream_song\/(.*)\?.*/) {
-	$out="OK store-id=http://reverbnation.squid.internal/" . $1;
+	  $out="OK store-id=http://reverbnation.squid.internal/" . $1;
 
+# ============================================================= #
+# Fileserve
+# ============================================================= #
+} elsif ($u=~ m/^http:\/\/fs\w*\.fileserve\.com\/file\/(\w*)\/[\w-]*\.\/(.*)/) {
+    $out="OK store-id=http://www.fileserve.com.squid.internal/" . $1 . "./" . $2 ;
+
+# ============================================================= #
+# youku
+# ============================================================= #
+} elsif ($u=~ m/^http\:\/\/.*\/youku\/(.*)\/(.*\.flv)/){
+   $out="OK store-id=http://video.youku.com.squid.internal/youku/" . $2 ;
+
+# ============================================================= #
+# daily motion
+# ============================================================= #
+} elsif ($u=~ m/^http\:\/\/vid2.ak.dmcdn.net\/(.*)\/(.*)\/video\/(.*)\/(.*\.flv)/){
+    $out="OK store-id=http://video.dailymotin.com.squid.internal/dailymotion/" . $2 . "/" . $4 ; 
+        
 # ============================================================= #
 # Sourcefrog
 # ============================================================= #
 } elsif ($u=~ m/^http:\/\/.*\.dl\.sourceforge\.net\/(.*)/) {
     $out="OK store-id=http://dl.sourceforge.net.squid.internal/" . $1 ;
-		
+
+# ========================================== #
+# Mediafire
+# ========================================== #
+} elsif ($u=~ m/^https?\:\/\/199\.91\.15\d\.\d*\/\w{12}\/(\w*)\/(.*)/) {#
+     $out="OK store-id=http://www.mediafire.com.squid.internal/" . $1 ."/" . $2 ;
+
+# ========================================== #
+# Filesonic
+# ========================================== #
+} elsif ($u=~ m/^http\:\/\/s[0-9]*\.filesonic\.com\/download\/([0-9]*)\/(.*)/) {
+    $out="OK store-id=http://www.filesonic.com.squid.internal/" . $1 ;
+        
 # ========================================== #
 # 4shared
 # ========================================== #
 } elsif ($u=~ m/^http\:\/\/[a-zA-Z]{2}\d*\.4shared\.com(:8080|)\/download\/(.*)\/(.*\..*)\?.*/) {
-	$out="OK store-id=http://www.4shared.com.squid.internal/download/$2\/$3";
+	  $out="OK store-id=http://www.4shared.com.squid.internal/download/$2\/$3";
 
 } elsif ($u=~ m/^http\:\/\/[a-zA-Z]{2}\d*\.4shared\.com(:8080|)\/img\/(\d*)\/\w*\/dlink__2Fdownload_2F(\w*)_3Ftsid_3D[\w-]*\/preview\.mp3\?sId=\w*/) {
-	$out="OK store-id=http://www.4shared.com.squid.internal/$2";
+	  $out="OK store-id=http://www.4shared.com.squid.internal/$2";
 
 } elsif (($u =~ /4shared/) && (m/^http:\/\/(.*?)\.(.*?)\/(.*?)\/(dlink__2Fdownload_2F([^\/-]+))([a-zA-Z0-9-]+)\/([^\/\?\&]*\.[^\/\?\&]{2,3})(\?.*)?$/)) {
-	@y = ($1,$2,$3,$4,$7);
-	$y[0] =~ s/[a-z]+([0-9]+)?/cdn./;
-	$out="OK store-id=http://" . $y[0] . $y[1] . "/" . $y[2] . "/" . $y[3] . "/" . $y[4] ;
+	  @y = ($1,$2,$3,$4,$7);
+	  $y[0] =~ s/[a-z]+([0-9]+)?/cdn./;
+	  $out="OK store-id=http://" . $y[0] . $y[1] . "/" . $y[2] . "/" . $y[3] . "/" . $y[4] ;
 
 # ============================================================= #
 # Maps.Google.com
@@ -127,7 +163,7 @@ if ($bypassallrules){
 # Google Play Store
 # ============================================================= #
 } elsif ($u=~ m/^https?\:\/\/.*\.c\.android\.clients\.google\.com\/market\/GetBinary\/GetBinary\/(.*\/.*)\?.*/) {
-	$out="OK store-id=http://playstore-android.squid.internal/" . $1;
+	  $out="OK store-id=http://playstore-android.squid.internal/" . $1;
 
 # ============================================================= #
 # Youtube Video

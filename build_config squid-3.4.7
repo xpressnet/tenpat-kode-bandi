@@ -9,7 +9,7 @@ CXXFLAGS="${CFLAGS}" \
 --localstatedir=/var \
 --libexecdir=${prefix}/lib/squid \
 --srcdir=. \
---datadir=${prefix}/share/squid \
+--datadir=/usr/share/squid \
 --sysconfdir=/etc/squid \
 --includedir=/usr/include \
 --infodir=/usr/share/info \
@@ -17,7 +17,7 @@ CXXFLAGS="${CFLAGS}" \
 --enable-storeio=ufs,aufs,diskd \
 --enable-removal-policies=lru,heap \
 --enable-async-io=32 \
---enable-cachemgr-hostname=TProxy \
+--enable-cachemgr-hostname=tproxy \
 --enable-ssl \
 --enable-ssl-crtd \
 --enable-linux-netfilter \
